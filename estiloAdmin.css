@@ -1,0 +1,1363 @@
+:root {
+    --primary: #213634;
+    --secondary: #8FAD8F;
+    --success: #4CAF50;
+    --warning: #FF9800;
+    --danger: #F44336;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #6c757d;
+    --light-gray: #e9ecef;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--light-gray);
+}
+
+/* Agregar esto en el archivo estiloAdmin.css, preferiblemente después de los estilos del header existentes */
+
+header {
+    background-color: var(--primary);
+    color: white;
+    padding: 25px 20px;
+    margin-bottom: 30px;
+    border-bottom: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+header h1 {
+    color: white;
+    margin-bottom: 8px;
+    font-size: 2.2rem;
+}
+
+header .subtitle {
+    color: var(--secondary);
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+h1 {
+    color: var(--primary);
+    margin-bottom: 10px;
+    font-size: 2.2rem;
+}
+
+.subtitle {
+    color: var(--gray);
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.dashboard {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card h2 i {
+    color: var(--secondary);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.stat-card {
+    background-color: var(--light);
+    border-radius: 10px;
+    padding: 20px 15px;
+    text-align: center;
+    border-left: 5px solid var(--primary);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    background-color: #f0f5ff;
+}
+
+.stat-card.completadas {
+    border-left-color: var(--success);
+}
+
+.stat-card.programadas {
+    border-left-color: var(--warning);
+}
+
+.stat-card.canceladas {
+    border-left-color: var(--danger);
+}
+
+.stat-number {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+.day-stats {
+    margin-top: 25px;
+}
+
+.day-stats h3 {
+    margin-bottom: 15px;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.day-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.calendar {
+    margin-top: 15px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-nav button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.calendar-nav button:hover {
+    background-color: var(--secondary);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.calendar-day {
+    text-align: center;
+    font-weight: 600;
+    padding: 12px 0;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.calendar-date {
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    font-weight: 500;
+}
+
+.calendar-date:hover {
+    background-color: var(--light-gray);
+}
+
+.calendar-date.selected {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* Mejora el estilo del punto indicador de citas */
+.calendar-date.has-appointments {
+    position: relative;
+    font-weight: bold;
+}
+
+.calendar-date.has-appointments::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: #dc3545; /* Rojo más visible */
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+.calendar-date.selected::after {
+    background: white; /* Punto blanco cuando está seleccionado */
+    border: 1px solid #274e3b;
+}
+
+.calendar-date.other-month {
+    color: #adb5bd;
+}
+
+.legend {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--danger);
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.selected-date {
+    margin-top: 25px;
+    padding: 18px;
+    background-color: var(--light);
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    border-left: 4px solid var(--primary);
+}
+
+.schedule-container {
+    display: block !important;
+    margin-top: 25px;
+}
+
+.schedule-header {
+    margin-bottom: 20px;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.schedule-table th, .schedule-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid var(--light-gray);
+}
+
+.schedule-table th {
+    background-color: var(--primary);
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.time-slot {
+    background-color: #f0f5ff;
+    font-weight: 600;
+    width: 100px;
+}
+
+.appointment {
+    background-color: #e8f4fd;
+    border-radius: 8px;
+    padding: 12px 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+    border-left: 4px solid var(--secondary);
+}
+
+.appointment:hover {
+    background-color: #d4edfa;
+    transform: scale(1.02);
+}
+
+.appointment.completed {
+    background-color: #e8f8ef;
+    border-left-color: var(--success);
+}
+
+.appointment.completed:hover {
+    background-color: #d4f2e3;
+}
+
+.appointment.cancelled {
+    background-color: #fde8e8;
+    border-left-color: var(--danger);
+}
+
+.appointment.cancelled:hover {
+    background-color: #fad4d4;
+}
+
+.patient-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--dark);
+}
+
+.patient-info {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 3px;
+}
+
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.status.programada {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status.completada {
+    background-color: #d1edff;
+    color: #004085;
+}
+
+.status.cancelada {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.patient-details {
+    display: block !important;
+    margin-top: 30px;
+}
+
+.patient-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.patient-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid var(--secondary);
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.patient-card:hover {
+    transform: translateY(-5px);
+}
+
+.patient-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.patient-card-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--dark);
+}
+
+.patient-card-info {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: 5px;
+}
+
+.gabinete-badge {
+    background-color: var(--primary);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s;
+    overflow-y: auto; /* AGREGAR: Permitir scroll en el overlay del modal */
+    padding: 20px 0; /* AGREGAR: Espacio alrededor */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: white;
+    margin: 2% auto;
+    border-radius: 12px;
+    width: 95%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s;
+}
+
+/* ESTILOS ESPECÍFICOS PARA MODAL DE EDICIÓN */
+#edit-modal .modal-content {
+    max-height: 85vh; /* Un poco menos de altura para mejor visualización */
+}
+
+#edit-modal .modal-body {
+    max-height: calc(85vh - 120px); /* Ajustar según la nueva altura */
+    overflow-y: auto;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--light-gray);
+    background-color: var(--primary);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: white;
+}
+
+.close {
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: var(--secondary);
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: calc(90vh - 120px);
+}
+
+.patient-detail h3 {
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.detail-label {
+    font-weight: 600;
+    width: 120px;
+    color: var(--primary);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary);
+}
+
+.btn-secondary {
+    background-color: var(--light-gray);
+    color: var(--dark);
+}
+
+.btn-secondary:hover {
+    background-color: #d1d1d1;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #d32f2f;
+}
+
+@media (max-width: 1200px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid, .day-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        font-size: 0.8rem;
+    }
+    
+    .patient-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .schedule-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+}
+
+
+/* Mejoras para la tabla de horarios */
+.schedule-table td.has-appointment {
+    background-color: #f8f9fa;
+}
+
+.appointment {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    border-left: 4px solid #274e3b;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.appointment:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.appointment.completed {
+    border-left-color: #28a745;
+    background: #f0fff4;
+}
+
+.appointment.cancelled {
+    border-left-color: #dc3545;
+    background: #fff0f0;
+}
+
+.patient-name {
+    font-weight: bold;
+    color: #274e3b;
+    margin-bottom: 4px;
+}
+
+.patient-info {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+/* Estados mejorados */
+.status {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status.programada {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status.completada {
+    background: #e8f5e8;
+    color: #2e7d32;
+}
+
+.status.cancelada {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* Tarjetas de pacientes mejoradas */
+.patient-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.patient-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.no-appointments {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Mejoras para el calendario */
+.calendar-date.has-appointments {
+    position: relative;
+}
+
+.calendar-date.has-appointments::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #274e3b;
+    border-radius: 50%;
+}
+
+.calendar-date.selected {
+    background: #274e3b !important;
+    color: white !important;
+}
+
+.calendar-date.selected::after {
+    background: white;
+}
+
+/* estilosAdmin.css - AGREGAR estos estilos al final del archivo */
+
+/* Modal de edición */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--gray);
+    font-size: 0.8rem;
+}
+
+.patient-info-preview {
+    background: var(--light-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border-left: 4px solid var(--primary);
+}
+
+.patient-info-preview h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary);
+}
+
+.patient-info-preview p {
+    margin: 0.25rem 0;
+}
+
+/* Estados de cita */
+.status.programada { background-color: #e3f2fd; color: #1976d2; }
+.status.completada { background-color: #e8f5e8; color: #2e7d32; }
+.status.cancelada { background-color: #ffebee; color: #c62828; }
+.status.no-asistio { background-color: #fff3e0; color: #ef6c00; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-content {
+        margin: 1% auto;
+        width: 98%;
+        max-height: 95vh;
+    }
+    
+    /* ESPECÍFICO PARA MODAL DE EDICIÓN EN MÓVIL */
+    #edit-modal .modal-content {
+        max-height: 90vh;
+    }
+    
+    #edit-modal .modal-body {
+        max-height: calc(90vh - 100px);
+        padding: 15px;
+    }
+    
+    #edit-modal .form-row {
+        grid-template-columns: 1fr; /* Una columna en móviles */
+    }
+}
+
+/* Navegación del panel admin */
+.admin-navigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px; 
+    border-bottom: 2px solid var(--light-gray);
+    padding-bottom: 15px;
+}
+
+
+.admin-section {
+    margin-bottom: 30px; 
+    display : none;
+}
+
+.nav-btn {
+    padding: 12px 20px;
+    background: var(--light-gray);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: var(--gray);
+}
+
+.nav-btn:hover {
+    background: var(--secondary);
+    color: white;
+}
+
+.nav-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* Formulario de terapia visual */
+.terapia-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.terapia-form .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.terapia-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.terapia-form input,
+.terapia-form select,
+.terapia-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.terapia-form input:focus,
+.terapia-form select:focus,
+.terapia-form textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(143, 173, 143, 0.1);
+}
+
+
+/* Estilos para checkbox personalizado */
+/* VERSIÓN MÁS AGRESIVA - DEBERÍA FUNCIONAR */
+.checkbox-label {
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    margin-bottom: 15px !important;
+    padding: 12px !important;
+    background: #f0f8f0 !important;
+    border: 2px solid #d1e7dd !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none !important;
+}
+
+.checkmark {
+    width: 28px !important;
+    height: 28px !important;
+    background: white !important;
+    border: 3px solid #6c757d !important;
+    border-radius: 5px !important;
+    margin-right: 15px !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background: #213634 !important;
+    border-color: #213634 !important;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: "✓" !important;
+    position: absolute !important;
+    color: white !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+.checkbox-label {
+    font-size: 1.1rem !important;
+    color: #213634 !important;
+    font-weight: 500 !important;
+}
+
+/* Estilo base para la celda del calendario */
+.calendar-date {
+    position: relative; /* Necesario para que el punto se ancle aquí */
+    z-index: 1;         /* Nivel base */
+}
+
+/* El PUNTO ROJO - Configuración para que NUNCA desaparezca */
+.calendar-date.has-appointments::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;           /* Ubicación desde abajo */
+    left: 50%;             /* Centrado */
+    transform: translateX(-50%);
+    
+    width: 6px;            /* Tamaño */
+    height: 6px;
+    background-color: #e74c3c; /* ROJO */
+    border-radius: 50%;
+    
+    /* ESTA ES LA MAGIA: */
+    z-index: 100;          /* Un número alto para estar SIEMPRE encima del fondo verde */
+    display: block !important; /* Fuerza que se muestre siempre */
+}
+
+/* Opcional: Si el fondo de 'seleccionado' es muy oscuro, cambia el punto a blanco o amarillo solo en ese día para que resalte más */
+.calendar-date.selected.has-appointments::after {
+    background-color: #fff; /* Cambia a blanco si seleccionas el día (opcional) */
+}
+
+/* ==================== ESTILOS ESPECÍFICOS PARA FORMULARIO DE EDICIÓN ==================== */
+
+#edit-modal .current-info {
+    background: #e9f2ff !important;
+    border-left: 4px solid var(--primary);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#edit-modal .current-info h4 {
+    margin-top: 0;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+#edit-modal .current-info > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+#edit-modal .current-info > div > div {
+    margin-bottom: 5px;
+}
+
+#edit-fields-container {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+/* Mejorar inputs específicos del modal de edición */
+#edit-modal .form-group input,
+#edit-modal .form-group select,
+#edit-modal .form-group textarea {
+    font-size: 14px;
+}
+
+#edit-modal .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Agregar al archivo estiloAdmin.css */
+
+/* Estilos para la navegación entre secciones */
+.admin-navigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--light-gray);
+    padding-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    padding: 12px 20px;
+    background: var(--light-gray);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: var(--gray);
+    font-size: 1rem;
+}
+
+.nav-btn:hover {
+    background: var(--secondary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.nav-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 8px rgba(33, 54, 52, 0.3);
+}
+
+/* Asegurar que las secciones del dashboard sean visibles */
+.dashboard {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.schedule-container {
+    display: block !important;
+    margin-top: 25px;
+}
+
+.patient-details {
+    display: block !important;
+    margin-top: 30px;
+}
+
+/* Ocultar secciones admin cuando no estén activas */
+.admin-section {
+    display: none;
+}
+
+.admin-section:not([style*="display: none"]) {
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-navigation {
+        flex-direction: column;
+    }
+    
+    .nav-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/*ESTILOS PARA MINI CALENDARIO*/
+
+/* ==================== ESTILOS COMPLETOS PARA MINI CALENDARIO ==================== */
+
+/* ==================== ESTILOS COMPLETOS PARA MINI CALENDARIO ==================== */
+
+/* ==================== ESTILOS MINI CALENDARIO SIMPLIFICADOS ==================== */
+
+.mini-calendar {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid #ddd;
+    display: none;
+    position: relative;
+    z-index: 100;
+}
+
+.mini-calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.mini-calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.mini-calendar-nav h4 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1rem;
+    text-align: center;
+    flex: 1;
+}
+
+.mini-calendar-prev,
+.mini-calendar-next {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    color: var(--primary);
+}
+
+.mini-calendar-prev:hover,
+.mini-calendar-next:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.close-mini-calendar {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #6c757d;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.close-mini-calendar:hover {
+    background: #f8f9fa;
+    color: #dc3545;
+}
+
+.mini-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.mini-calendar-day {
+    text-align: center;
+    font-weight: 600;
+    padding: 8px 0;
+    color: var(--primary);
+    font-size: 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.mini-calendar-date {
+    text-align: center;
+    padding: 8px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    font-weight: 500;
+    position: relative;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mini-calendar-date:hover:not(.other-month):not(.weekend) {
+    background: var(--secondary);
+    color: white;
+}
+
+.mini-calendar-date.selected {
+    background: var(--primary) !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+/* Punto para citas */
+.mini-calendar-date.has-appointments::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #e74c3c;
+    border-radius: 50%;
+}
+
+.mini-calendar-date.selected.has-appointments::after {
+    background: white;
+}
+
+.mini-calendar-date.other-month {
+    color: #adb5bd;
+    cursor: not-allowed;
+}
+
+.mini-calendar-date.weekend {
+    color: #adb5bd;
+    cursor: not-allowed;
+    background: #f8f9fa;
+}
+
+.mini-calendar-date.today {
+    border: 1px solid var(--primary);
+    font-weight: bold;
+}
+
+/* Botón cambiar fecha */
+#calendar-toggle {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+}
+
+#calendar-toggle:hover {
+    background: var(--secondary);
+}
+
+
+        /* =========================================
+   MEDIA QUERIES (RESPONSIVO)
+   Copia esto al final de tu archivo CSS
+   ========================================= */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 1200px) {
+    .dashboard {
+        grid-template-columns: 1fr !important; /* Mantiene el sitio en una columna vertical */
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr); /* En tablets grandes aún caben 4 */
+    }
+}
+
+/* Móviles (Aquí está el cambio específico que pediste) */
+@media (max-width: 768px) {
+    
+    /* 1. ESTABILIDAD: Esto evita que "se mueva todo" */
+    .dashboard {
+        display: grid;
+        grid-template-columns: 1fr !important; /* Estructura principal vertical */
+        gap: 20px;
+    }
+
+    /* 2. EL CAMBIO: Resumen de citas en 2 columnas (2 arriba, 2 abajo) */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr) !important; /* <--- AQUÍ ESTÁ EL CAMBIO */
+        gap: 10px;
+    }
+
+    /* 3. Mantener estadísticas del día (las de abajo) en 1 columna para que se lean bien */
+    .day-stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Ajustes visuales generales para móvil */
+    .admin-navigation {
+        flex-direction: column;
+    }
+    
+    .nav-btn {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        font-size: 0.8rem;
+    }
+    
+    .patient-cards {
+        grid-template-columns: 1fr; /* Tarjetas de pacientes una por fila */
+    }
+    
+    .schedule-table {
+        display: block;
+        overflow-x: auto; /* Permite deslizar la tabla si es muy ancha */
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+
+    /* Ajuste del modal de edición en móvil */
+    #edit-modal .form-row {
+        grid-template-columns: 1fr;
+    }
+}

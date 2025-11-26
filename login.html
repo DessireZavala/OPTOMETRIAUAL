@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso al Panel de Administración</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="estiloAdmin.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .login-container h2 {
+            color: var(--primary, #213634);
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--light-gray, #e9ecef);
+            border-radius: 8px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-size: 1rem;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            background-color: var(--primary, #213634);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .login-form button:hover {
+            background-color: var(--secondary, #8FAD8F);
+        }
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: none;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            background-color: #d1edff;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <i class="fas fa-eye" style="font-size: 2.2rem; color: var(--primary, #213634);"></i>
+        <h1>Panel de Administración</h1>
+    </header>
+
+    <div class="login-container">
+        <h2><i class="fas fa-lock"></i> Acceso Seguro</h2>
+        <div id="message"></div>
+        
+        <form id="loginForm" class="login-form">
+            <input type="text" id="username" placeholder="Nombre de Usuario">
+            <div style="position: relative; margin-bottom: 20px;"> 
+                <input type="password" id="password" placeholder="Contraseña" style="padding-right: 40px; margin-bottom: 0;">
+                <i class="fas fa-eye-slash" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--gray);"></i>
+            </div>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+
+        <p style="margin-top: 25px; font-size: 0.9rem; color: var(--gray);">
+            <strong>Usuarios de prueba:</strong><br>
+            • Administrador: <strong>admin</strong> / <strong>adminUAL</strong><br>
+            • Coordinador: <strong>coordinador</strong> / <strong>cooUAL</strong><br>
+            • Estudiante: <strong>optometrista</strong> / <strong>optoUAL</strong>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageEl = document.getElementById('message');
+            
+            messageEl.style.display = 'none';
+            messageEl.classList.remove('error', 'success');
+
+            try {
+                console.log('🔐 Intentando login con:', username);
+                
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        username: username, 
+                        password: password 
+                    })
+                });
+
+                console.log('📡 Respuesta:', response.status);
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log('✅ Login exitoso:', data);
+                    messageEl.textContent = `✅ Bienvenido ${data.user} (${data.rol})! Redirigiendo...`;
+                    messageEl.classList.add('success');
+                    messageEl.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'panelAdmin.html';
+                    }, 1000);
+                } else {
+                    console.log('❌ Error de login:', data);
+                    messageEl.textContent = `❌ ${data.message || 'Error de autenticación'}`;
+                    messageEl.classList.add('error');
+                    messageEl.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('❌ Error de conexión:', error);
+                messageEl.textContent = '❌ Error de conexión con el servidor';
+                messageEl.classList.add('error');
+                messageEl.style.display = 'block';
+            }
+        });
+
+        // Auto-enfocar el campo de usuario
+        document.getElementById('username').focus();
+
+
+        // AGREGAR: Funcionalidad de alternar la visibilidad de la contraseña
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Alternar el icono del ojo
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+    </script>
+</body>
+</html>

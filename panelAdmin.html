@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clínica de Optometría UAL - Panel de Administración </title>
+    <link rel="stylesheet" href="estiloAdmin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  </head>
+  <body>
+    <div id="appointment-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Detalles de la Cita</h2>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="patient-detail">
+            <h3 id="modal-patient-name"></h3>
+            <div class="detail-row">
+              <span class="detail-label">Edad:</span>
+              <span id="modal-patient-age"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Teléfono:</span>
+              <span id="modal-patient-phone"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Gabinete:</span>
+              <span id="modal-gabinete"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Hora:</span>
+              <span id="modal-time"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Estado:</span>
+              <span id="modal-status"></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Notas:</span>
+              <span id="modal-notes"
+                >Examen de rutina para estudiante. Traer lentes anteriores si
+                los tiene.</span
+              >
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-primary">Editar Cita</button>
+            <button class="btn btn-secondary">Imprimir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <header>
+        <h1>Clínica de Optometría UAL</h1>
+        <p class="subtitle">Panel de Administración</p>
+      </header>
+
+      <div class="admin-navigation">
+        <button class="nav-btn active" onclick="showSection('dashboard')">
+          Dashboard Principal
+        </button>
+        <button class="nav-btn" onclick="showSection('terapiaVisual')">
+          Agendar Terapia Visual
+        </button>
+        <button class="nav-btn" onclick="showSection('reportes')">
+          Reportes y Exportación
+        </button>
+      </div>
+
+      <div
+        id="terapiaVisualSection"
+        class="admin-section"
+        style="display: none"
+      >
+        <div class="card">
+          <h2><i class="fas fa-eye"></i> Agendar Terapia Visual</h2>
+
+          <form id="terapiaVisualForm" class="terapia-form">
+            <div class="form-group">
+              <label for="terapiaNombre">Nombre del Paciente:</label>
+              <input
+                type="text"
+                id="terapiaNombre"
+                placeholder="Ej: Juan Pérez García"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="terapiaEdad">Edad (opcional):</label>
+              <input
+                type="number"
+                id="terapiaEdad"
+                placeholder="Ej: 25"
+                min="1"
+                max="120"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="terapiaTelefono">Teléfono (opcional):</label>
+              <input
+                type="tel"
+                id="terapiaTelefono"
+                placeholder="Ej: 555-123-4567"
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="terapiaFecha">Fecha de inicio:</label>
+                <input
+                  type="date"
+                  id="terapiaFecha"
+                  required
+                  pattern="\d{4}-\d{2}-\d{2}"
+                  placeholder="YYYY-MM-DD"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="terapiaHora">Hora:</label>
+                <select id="terapiaHora" required>
+                  <option value="">Selecciona hora</option>
+                  <option value="12:30:00">12:30 PM</option>
+                  <option value="13:30:00">1:30 PM</option>
+                  <option value="14:30:00">2:30 PM</option>
+                  <option value="15:30:00">3:30 PM</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="terapiaRecurrente" checked />
+                <span class="checkmark"></span>
+                Programar citas recurrentes por 3 meses (mismo día y hora cada
+                semana)
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label for="terapiaNotas">Notas adicionales:</label>
+              <textarea
+                id="terapiaNotas"
+                placeholder="Observaciones o detalles importantes..."
+                rows="3"
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-calendar-plus"></i> Agendar Terapia Visual
+            </button>
+          </form>
+
+          <div id="terapiaMessage" style="margin-top: 15px"></div>
+        </div>
+      </div>
+
+<div id="reportesSection" class="admin-section" style="display: none">
+    <div class="card">
+        <h2><i class="fas fa-file-alt"></i> Reporte Semanal de Citas</h2>
+        <p>Datos de las citas programadas en los últimos 7 días. (Desde <span id="reporteFechaInicio"></span> hasta <span id="reporteFechaFin"></span>)</p>
+
+        <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+            <button id="exportExcelBtn" class="btn btn-secondary">
+                <i class="fas fa-file-excel"></i> Exportar a Excel
+            </button>
+            
+            <button id="refreshReportBtn" class="btn btn-primary">
+                <i class="fas fa-sync-alt"></i> Actualizar Reporte
+            </button>
+        </div>
+        
+        <div id="reporteResultado">
+            <table id="reporteTable" class="schedule-table" style="text-align: left;">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Paciente</th>
+                        <th>Teléfono</th>
+                        <th>Motivo</th>
+                        <th>Gabinete</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se cargarán aquí dinámicamente -->
+                </tbody>
+            </table>
+            <div id="reporteMessage" style="margin-top: 20px;">Cargando reportes...</div>
+        </div>
+    </div>
+</div>
+
+      <div id="dashboardSection" class="admin-section">
+        <div class="dashboard">
+          <div class="card">
+            <h2><i class="fas fa-chart-bar"></i> Resumen de Citas</h2>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Total de Citas</div>
+              </div>
+              <div class="stat-card completadas">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Completadas</div>
+              </div>
+              <div class="stat-card programadas">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Programadas</div>
+              </div>
+              <div class="stat-card canceladas">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Canceladas</div>
+              </div>
+            </div>
+
+            <div class="day-stats">
+              <h3><i class="fas fa-calendar-day"></i> Para este día</h3>
+              <div class="day-stats-grid">
+                <div class="stat-card">
+                  <div class="stat-number">3</div>
+                  <div class="stat-label">Atendidas</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-number">4</div>
+                  <div class="stat-label">Pendientes</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-number">1</div>
+                  <div class="stat-label">No atendidas</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><i class="fas fa-calendar-alt"></i> Seleccionar Fecha</h2>
+            <p>Elije una fecha para ver las citas programadas</p>
+
+            <div class="calendar">
+              <div class="calendar-header">
+                <h3>Noviembre 2025</h3>
+                <div class="calendar-nav">
+                  <button id="prev-month">
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button id="next-month">
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="calendar-grid">
+                <div class="calendar-day">Dom</div>
+                <div class="calendar-day">Lun</div>
+                <div class="calendar-day">Mar</div>
+                <div class="calendar-day">Mié</div>
+                <div class="calendar-day">Jue</div>
+                <div class="calendar-day">Vie</div>
+                <div class="calendar-day">Sáb</div>
+
+                </div>
+
+              <div class="legend">
+                <div class="legend-dot"></div>
+                <span>Días con citas programadas</span>
+              </div>
+
+              <div class="selected-date">
+                <strong>Fecha seleccionada:</strong><br />
+                viernes, 20 de diciembre de 2024
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card schedule-container">
+    <div class="schedule-header">
+        <h2>
+            <i class="fas fa-clock"></i> Horario del día - viernes, 20 de diciembre de 2024
+        </h2>
+        <div class="schedule-actions">
+            <button id="calendar-toggle" class="btn btn-secondary">
+                <i class="fas fa-calendar-alt"></i> Calendario
+            </button>
+        </div>
+    </div>
+
+    <!-- Mini calendario DENTRO del card pero después del header -->
+    <div id="mini-calendar" class="mini-calendar" style="display: none;">
+        <div class="mini-calendar-header">
+            <div class="mini-calendar-nav">
+                <button class="mini-calendar-prev"><i class="fas fa-chevron-left"></i></button>
+                <h4 id="mini-calendar-title">Seleccionar fecha</h4>
+                <button class="mini-calendar-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <button class="close-mini-calendar">&times;</button>
+        </div>
+        <div class="mini-calendar-grid"></div>
+    </div>
+
+    <p>Citas organizadas por hora y gabinete</p>
+    <h3><i class="fas fa-clipboard-list"></i> Programación de Gabinetes</h3>
+
+    <table class="schedule-table">
+        <thead>
+            <tr>
+                <th>Hora</th>
+                <th>Gabinete 1</th>
+                <th>Gabinete 2</th>
+                <th>Gabinete 3</th>
+                <th>Gabinete 4</th>
+                <th>Gabinete 5</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="time-slot">☐ 12:30</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+            </tr>
+            <tr>
+                <td class="time-slot">☐ 13:30</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+            </tr>
+            <tr>
+                <td class="time-slot">☐ 14:30</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+            </tr>
+            <tr>
+                <td class="time-slot">☐ 15:30</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+                <td>Disponible</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+        <div class="card patient-details">
+          <h2><i class="fas fa-users"></i> Detalles de Pacientes</h2>
+
+          <div class="patient-cards">
+            <div class="no-appointments">No hay citas programadas para esta fecha</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini calendario FUERA del card -->
+    <div id="mini-calendar" class="mini-calendar" style="display: none;">
+        <div class="mini-calendar-header">
+            <div class="mini-calendar-nav">
+                <button class="mini-calendar-prev"><i class="fas fa-chevron-left"></i></button>
+                <h4 id="mini-calendar-title">Seleccionar fecha</h4>
+                <button class="mini-calendar-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <button class="close-mini-calendar">&times;</button>
+        </div>
+        <div class="mini-calendar-grid"></div>
+    </div>
+
+    <script src="funAdmin.js"></script>
+  </body>
+</html>

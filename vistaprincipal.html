@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Citas UAL</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <img src="assets/LogoUAL.jpg" class="logo" alt="Logo UAL">
+    <h1>Universidad Autónoma de La Laguna</h1>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="step-indicator">
+        <div class="step active">1</div>
+        <div class="step">2</div>
+        <div class="step">3</div>
+        <div class="step">4</div>
+        <div class="step">5</div>
+      </div>
+
+      <div class="progress-bar"><div class="progress"></div></div>
+
+      <section class="step-view active">
+    <h2>Bienvenido - paso 1 de 4</h2>
+    <p>¿Eres un paciente nuevo o estas regresando para una visita de seguimiento?</p>
+    <div class="options">
+        <button class="option" id="optionNuevo">Paciente nuevo</button>
+        <button class="option" id="optionHabitual">Paciente habitual</button>
+    </div>
+    <div class="buttons" style="justify-content: flex-end;"> 
+        <button id="next1" disabled>Siguiente</button> 
+    </div>
+</section>
+
+      <section class="step-view">
+        <h2>Selecciona el tipo de servicio</h2>
+                <p>Eliga el tipo de servicio que necesita para su cuidado visual.</p>
+                <div class="options">
+                    <button class="option">Lentes de Armazón</button>
+                    <button class="option">Lentes de Contacto</button>
+                </div>
+        <div class="buttons">
+          <button class="back">Atrás</button>
+          <button id="next2">Siguiente</button>
+        </div>
+      </section>
+
+      <section class="step-view">
+        <h2>Seleccionar Fecha y Hora</h2>
+        <p>Elije una fecha disponible para agendar tu cita</p>
+
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <button id="prevMonth">&lt;</button>
+            <h3 id="monthYear"></h3>
+            <button id="nextMonth">&gt;</button>
+          </div>
+          <div class="calendar" id="calendar"></div>
+        </div>
+
+        <div class="time-container">
+          <h3>Horarios disponibles</h3>
+          <div id="timeSlots" class="time-slots"></div>
+        </div>
+
+        <div id="selectedSummary" class="summary-box">
+          <p>🗓️ Cita seleccionada: <span id="selectedText">Ninguna</span></p>
+        </div>
+
+        <div class="buttons">
+          <button class="back">Atrás</button>
+          <button id="next3">Siguiente</button>
+        </div>
+      </section>
+
+      <section class="step-view">
+        <h2>Datos del Paciente</h2> 
+        <p>Ingresa o verifica tus datos para la cita.</p>
+
+         <div class="form-group">
+             </div>
+        <div class="buttons">
+          <button class="back">Atrás</button>
+          <button id="next4">Confirmar Cita</button>
+        </div>
+      </section>
+
+      <section class="step-view">
+  <div class="confirmation-box">
+    <div class="circle-icon">✔</div>
+    <h2>Cita realizada</h2>
+    <p>La cita ha sido agendada con éxito</p>
+
+    <div class="details">
+      <div class="detail"><strong>Tipo de atención:</strong> <span id="confirmTipoAtencion">Presencial</span></div>
+      <div class="detail"><strong>Tipo de servicio:</strong> <span id="confirmTipoServicio">Seguimiento</span></div>
+      <div class="detail"><strong>Fecha:</strong> <span id="confirmFecha">Lunes, 10 de noviembre de 2025</span></div>
+      <div class="detail"><strong>Hora:</strong> <span id="confirmHora">10:30 hrs</span></div>
+      <div class="detail"><strong>Nombre del paciente:</strong> <span id="confirmNombre">---</span></div>
+    </div>
+
+    <p class="message">
+      Confirmación enviada.<br>
+      Se le enviará un mensaje de confirmación a su Whatsapp.<br>
+      Por favor, llegue 10 minutos antes de su cita.
+    </p>
+
+    <button id="newAppointment" class="main-btn">Agendar otra cita</button>
+  </div>
+</section>
+
+    </div>
+  </main>
+
+  <a href="https://wa.me/8712390715?text=Hola,%20quisiera%20más%20información%20sobre%20las%20citas." 
+   class="whatsapp-btn" 
+   target="_blank"
+   title="Contáctanos por WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+  <footer>
+    © 2025 Universidad Autónoma de La Laguna - Sistema de citas
+  </footer>
+
+  <script src="principal.js"></script>
+</body>
+</html>
