@@ -1,6 +1,6 @@
 # app.py - VERSIÓN CORREGIDA: GABINETES DINÁMICOS Y OCUPACIÓN MÚLTIPLE
 
-from flask import Flask, request, jsonify, session, make_response
+from flask import Flask, request, jsonify, session, make_response, send_from_directory, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -16,11 +16,21 @@ from dateutil.relativedelta import relativedelta
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Configuración para Vercel
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'clave_desarrollo_vercel')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_recycle': 300,
+    'pool_pre_ping': True
+}
+
+
+
 # CONFIGURACIÓN CRÍTICA DE COOKIES Y SESIÓN
 app.config.update(
     SECRET_KEY='clave_super_secreta_para_desarrollo_2025_optometria_ual',
     SESSION_COOKIE_NAME='optometria_session',
-    SESSION_COOKIE_SECURE=False,           
+    SESSION_COOKIE_SECURE=True,           
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',          
     SESSION_COOKIE_DOMAIN=None,             
@@ -448,6 +458,11 @@ def inicializar_db():
 # ----------------------------------------------------
 # 🚪 Rutas de Autenticación
 # ----------------------------------------------------
+
+# Rutas básicas
+@app.route('/')
+def serve_login():
+    return jsonify({"message": "API de Optometría", "status": "active"})
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
@@ -1109,7 +1124,7 @@ def get_reporte_semanal():
 # 🚀 Ejecución de la Aplicación
 # ----------------------------------------------------
 
-if __name__ == '__main__':
-    inicializar_db() 
-    print("🚀 Servidor Flask iniciado en http://127.0.0.1:5000")
-    app.run(debug=True, host='127.0.0.1', port=5000, use_reloader=False)
+#if __name__ == '__main__':
+    #inicializar_db() 
+    #print("🚀 Servidor Flask iniciado en http://127.0.0.1:5000")
+    #app.run(debug=True, host='127.0.0.1', port=5000, use_reloader=False)
