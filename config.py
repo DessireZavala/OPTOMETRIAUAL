@@ -1,45 +1,29 @@
 # config.py
+# Configuración para desarrollo local.
+# Los datos sensibles (clave secreta, conexión a la base de datos y contraseñas
+# de los usuarios iniciales) se leen del archivo .env, que NO se sube al repositorio.
+# Usa .env.example como plantilla.
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class Config:
-    # Clave secreta PARA DESARROLLO - en producción usar variable de entorno
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'clave_super_secreta_para_desarrollo_2025_optometria_ual'
-    
-    # Configuración de la base de datos MySQL
-    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:@localhost/ual_optometria'
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+
+    # Base de datos MySQL local (ver DATABASE_URL en .env)
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'DATABASE_URL', 'mysql+pymysql://root:@localhost/ual_optometria'
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    
-    # Configuración de sesión CRÍTICA
-    SESSION_COOKIE_SECURE = False  # False para desarrollo (HTTP)
+
+    # Contraseñas de los usuarios que se crean al inicializar la base de datos
+    ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
+    COORDINADOR_PASSWORD = os.environ.get('COORDINADOR_PASSWORD')
+    OPTOMETRISTA_PASSWORD = os.environ.get('OPTOMETRISTA_PASSWORD')
+
+    # Sesión: SESSION_COOKIE_SECURE va en False porque en local se usa HTTP
+    SESSION_COOKIE_SECURE = False
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
-    PERMANENT_SESSION_LIFETIME = 3600  # 1 hora en segundos
-    REMEMBER_COOKIE_DURATION = 3600
-    
-    # Gabinetes disponibles
-    GABINETES = [
-        {'id': 1, 'nombre': 'Gabinete 1'},
-        {'id': 2, 'nombre': 'Gabinete 2'},
-        {'id': 3, 'nombre': 'Gabinete 3'},
-        {'id': 4, 'nombre': 'Gabinete 4'},
-        {'id': 5, 'nombre': 'Gabinete 5'},
-        {'id': 6, 'nombre': 'Gabinete 6'},
-    ]
-
-    # Tipos de citas
-    MOTIVOS_CITA = [
-        {'id': 1, 'descripcion': 'Lentes graduados de armazón'},
-        {'id': 2, 'descripcion': 'Lentes de contacto'},
-    ]
-
-    # Horarios de atención
-    HORARIOS_ATENCION = [
-        '12:30:00', '13:30:00', '14:30:00', '15:30:00'
-    ]
-
-MOTIVOS_CITA = [
-    {'id': 1, 'descripcion': 'Lentes graduados de armazón'},
-    {'id': 2, 'descripcion': 'Lentes de contacto'},
-    {'id': 3, 'descripcion': 'Terapia visual'},  # NUEVO SERVICIO
-]

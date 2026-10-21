@@ -1,6 +1,6 @@
 # app.py - VERSIÓN CORREGIDA: GABINETES DINÁMICOS Y OCUPACIÓN MÚLTIPLE
 
-from flask import Flask, request, jsonify, session, make_response, send_from_directory, render_template
+from flask import Flask, request, jsonify, session, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -16,21 +16,13 @@ from dateutil.relativedelta import relativedelta
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Configuración para Vercel
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'clave_desarrollo_vercel')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_recycle': 300,
-    'pool_pre_ping': True
-}
-
-
+if not app.config.get('SECRET_KEY'):
+    raise RuntimeError("Falta SECRET_KEY. Copia .env.example como .env y llena los valores.")
 
 # CONFIGURACIÓN CRÍTICA DE COOKIES Y SESIÓN
 app.config.update(
-    SECRET_KEY='clave_super_secreta_para_desarrollo_2025_optometria_ual',
     SESSION_COOKIE_NAME='optometria_session',
-    SESSION_COOKIE_SECURE=True,           
+    SESSION_COOKIE_SECURE=False,           # False en desarrollo local (HTTP)
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',          
     SESSION_COOKIE_DOMAIN=None,             
@@ -128,11 +120,8 @@ class Config:
         {'id': 2, 'descripcion': 'Lentes de Contacto'},
         {'id': 3, 'descripcion': 'Terapia Visual'}
     ]
-    
-    #SQLALCHEMY_DATABASE_URI = 'sqlite:///optometria.db'  
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    
+    # La base de datos, la clave secreta y las contraseñas se configuran en config.py / .env
+
 # Modelo Paciente
 class Paciente(db.Model):
     id_paciente = db.Column(db.Integer, primary_key=True)
@@ -199,6 +188,7 @@ class Cita(db.Model):
     estado = db.Column(db.String(20), default='Programada')
     
     def to_dict(self):
+        detalle_serie = CitaRecurrenteDetalle.query.filter_by(id_cita=self.id_cita).first()
         return {
             'id_cita': self.id_cita,
             'fecha': self.fecha.strftime('%Y-%m-%d'),
@@ -207,6 +197,8 @@ class Cita(db.Model):
             'id_motivo': self.id_motivo,
             'id_gabinete': self.id_gabinete,
             'estado': self.estado,
+            'es_recurrente': detalle_serie is not None,
+            'id_serie': detalle_serie.id_serie if detalle_serie else None,
             'paciente': self.paciente.to_dict() if self.paciente else None,
             'motivo': self.motivo.descripcion if self.motivo else 'N/A',
             'gabinete': self.gabinete.nombre if self.gabinete else 'N/A'
@@ -410,30 +402,24 @@ def inicializar_db():
         coord_rol = Rol.query.filter_by(nombre_rol='Coordinador').first()
         est_rol = Rol.query.filter_by(nombre_rol='Optometrista').first()
 
-        # 3. Usuarios Iniciales
-        if not Usuario.query.filter_by(nombre_usuario='admin').first():
-            admin_user = Usuario(
-                nombre_usuario='admin',
-                contrasena=generate_password_hash('adminUAL'),
-                id_rol=admin_rol.id_rol
-            )
-            db.session.add(admin_user)
-
-        if not Usuario.query.filter_by(nombre_usuario='coordinador').first():
-            coord_user = Usuario(
-                nombre_usuario='coordinador',
-                contrasena=generate_password_hash('cooUAL'),
-                id_rol=coord_rol.id_rol
-            )
-            db.session.add(coord_user)
-
-        if not Usuario.query.filter_by(nombre_usuario='optometrista').first():
-            est_user = Usuario(
-                nombre_usuario='optometrista',
-                contrasena=generate_password_hash('optoUAL'),
-                id_rol=est_rol.id_rol
-            )
-            db.session.add(est_user)
+        # 3. Usuarios Iniciales (las contraseñas vienen del archivo .env)
+        usuarios_iniciales = [
+            ('admin', 'ADMIN_PASSWORD', admin_rol),
+            ('coordinador', 'COORDINADOR_PASSWORD', coord_rol),
+            ('optometrista', 'OPTOMETRISTA_PASSWORD', est_rol),
+        ]
+        for nombre_usuario, variable, rol in usuarios_iniciales:
+            if Usuario.query.filter_by(nombre_usuario=nombre_usuario).first():
+                continue
+            contrasena = app.config.get(variable)
+            if not contrasena:
+                print(f"⚠️ Falta {variable} en .env: no se creó el usuario '{nombre_usuario}'.")
+                continue
+            db.session.add(Usuario(
+                nombre_usuario=nombre_usuario,
+                contrasena=generate_password_hash(contrasena),
+                id_rol=rol.id_rol
+            ))
 
         # 4. Gabinetes 
         try:
@@ -458,11 +444,6 @@ def inicializar_db():
 # ----------------------------------------------------
 # 🚪 Rutas de Autenticación
 # ----------------------------------------------------
-
-# Rutas básicas
-@app.route('/')
-def serve_login():
-    return jsonify({"message": "API de Optometría", "status": "active"})
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
@@ -672,6 +653,7 @@ def get_citas_admin():
         return jsonify({'message': 'Error al cargar citas', 'error': str(e)}), 500
 
 @app.route('/api/citas/debug', methods=['GET'])
+@login_required
 def debug_citas():
     try:
         citas = Cita.query.all()
@@ -1124,7 +1106,7 @@ def get_reporte_semanal():
 # 🚀 Ejecución de la Aplicación
 # ----------------------------------------------------
 
-#if __name__ == '__main__':
-    #inicializar_db() 
-    #print("🚀 Servidor Flask iniciado en http://127.0.0.1:5000")
-    #app.run(debug=True, host='127.0.0.1', port=5000, use_reloader=False)
+if __name__ == '__main__':
+    inicializar_db()
+    print("🚀 Servidor Flask iniciado en http://127.0.0.1:5000")
+    app.run(debug=True, host='127.0.0.1', port=5000, use_reloader=False)

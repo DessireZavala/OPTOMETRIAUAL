@@ -8,11 +8,8 @@ blinker==1.9.0
 Flask-SQLAlchemy==3.1.1
 SQLAlchemy==2.0.38
 Flask-Login==0.6.3
-Flask-Bcrypt==1.0.1
-bcrypt==4.3.0
-cffi==1.16.0
 flask-cors==6.0.1
 python-dateutil==2.9.0.post0
-psycopg2-binary==2.9.9
-gunicorn==23.0.0
-PyMySQL==1.1.0
+PyMySQL==1.1.1
+cryptography==46.0.1
+python-dotenv==1.0.1

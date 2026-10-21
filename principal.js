@@ -1,6 +1,6 @@
 let currentStep = 1;
 const totalSteps = 5;
-const API_BASE_URL = 'http://127.0.0.1:5000'; // URL base de tu servidor Flask
+const API_BASE_URL = window.location.origin; // Mismo servidor Flask que sirve las páginas
 
 // Variables globales para el flujo de la cita
 let selectedDate = null;

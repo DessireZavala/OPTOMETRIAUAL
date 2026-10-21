@@ -1,6 +1,6 @@
 // funAdmin.js - VERSIÓN CORREGIDA
 
-const API_BASE_URL = 'http://127.0.0.1:5000';
+const API_BASE_URL = window.location.origin; // Mismo servidor Flask que sirve las páginas
 
 // Variables globales
 let currentDate = new Date();
@@ -1013,6 +1013,7 @@ function showEditModal(cita) {
                 <div class="modal-body">
                     <form id="edit-cita-form">
                         <input type="hidden" id="edit-cita-id" value="${cita.id_cita}">
+                        <input type="hidden" id="edit-serie-id" value="${cita.id_serie || ''}">
                         
                         <div class="current-info" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                             <h4 style="margin-top: 0; color: #274e3b;">📋 Información Actual</h4>
@@ -1025,6 +1026,7 @@ function showEditModal(cita) {
                                 <div><strong>Servicio:</strong> ${cita.motivo}</div>
                                 <div><strong>Estado:</strong> <span class="status ${cita.estado.toLowerCase().replace(' ', '-')}">${cita.estado}</span></div>
                             </div>
+                            ${cita.id_serie ? `<p style="margin: 10px 0 0; color: #274e3b;"><i class="fas fa-redo"></i> Esta cita es parte de una terapia visual recurrente. Los cambios solo afectan a esta cita, salvo que elijas cancelar toda la terapia.</p>` : ''}
                         </div>
 
                         <div class="form-group">
@@ -1044,6 +1046,7 @@ function showEditModal(cita) {
                                 <option value="reagendar">Reagendar Cita</option>
                                 <option value="cancelar">Cancelar Cita</option>
                                 <option value="cambio_estado">Cambiar Estado</option>
+                                ${cita.id_serie ? '<option value="cancelar_serie">Cancelar toda la terapia (citas futuras)</option>' : ''}
                             </select>
                         </div>
 
@@ -1282,10 +1285,26 @@ async function handleEditFormSubmit(event) {
         formData.estado = document.getElementById('edit-estado').value;
     }
     
+    // Citas de terapia recurrente: se edita solo esa cita o se cancela toda la serie
+    const serieId = document.getElementById('edit-serie-id').value;
+    let url = `${API_BASE_URL}/api/citas/${formData.id_cita}/editar`;
+    if (tipoModificacion === 'cancelar_serie') {
+        if (!serieId) {
+            alert('❌ Esta cita no pertenece a una terapia recurrente');
+            return;
+        }
+        if (!confirm('¿Cancelar todas las citas futuras de esta terapia visual?')) {
+            return;
+        }
+        url = `${API_BASE_URL}/api/citas/serie/${serieId}/cancelar`;
+    } else if (serieId) {
+        url = `${API_BASE_URL}/api/citas/${formData.id_cita}/editar_individual`;
+    }
+    
     try {
         console.log('📤 Enviando datos de modificación:', formData);
         
-        const response = await fetch(`${API_BASE_URL}/api/citas/${formData.id_cita}/editar`, {
+        const response = await fetch(url, {
             method: 'PUT',
             headers: { 
                 'Content-Type': 'application/json',
@@ -1306,6 +1325,9 @@ async function handleEditFormSubmit(event) {
             mensaje += `📝 Registrado por: ${matricula}\n`;
             mensaje += `🎯 Tipo: ${tipoModificacion}\n`;
             mensaje += `📋 Motivo: ${motivoModificacion}`;
+            if (result.message) {
+                mensaje += `\n${result.message}`;
+            }
             
             alert(mensaje);
             closeEditModal();
